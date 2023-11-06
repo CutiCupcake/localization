@@ -1,3 +1,10 @@
+#MODIFIED- **2023-08-13:**
+
+The following modifications have been made to the code based on FAST-LIO-LOCALIZATION: 
+1. Modified the syntax of related packages to be compatible with Python 3 version.
+2. Adjusted the FOV parameters to accommodate the MID360.
+3. Based on the actual environment, the matching threshold was lowered from 0.95 to 0.9.
+
 # FAST-LIO-LOCALIZATION
 
 A simple localization framework that can re-localize in built maps based on [FAST-LIO](https://github.com/hku-mars/FAST_LIO). 
