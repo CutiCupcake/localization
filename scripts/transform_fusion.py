@@ -72,7 +72,7 @@ def cb_save_map_to_odom(odom_msg):
 
 if __name__ == '__main__':
     # tf and localization publishing frequency (HZ)
-    FREQ_PUB_LOCALIZATION = 50
+    FREQ_PUB_LOCALIZATION = 200
 
     rospy.init_node('transform_fusion')
     rospy.loginfo('Transform Fusion Node Inited...')

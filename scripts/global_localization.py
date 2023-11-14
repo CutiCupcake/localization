@@ -208,7 +208,9 @@ def thread_localization():
 
 
 if __name__ == '__main__':
+    # 地图体素尺寸，越小地图更精细
     MAP_VOXEL_SIZE = 0.4
+    # 扫描体素尺寸
     SCAN_VOXEL_SIZE = 0.1
 
     # Global localization frequency (HZ)
@@ -216,7 +218,7 @@ if __name__ == '__main__':
 
     # The threshold of global localization,
     # only those scan2map-matching with higher fitness than LOCALIZATION_TH will be taken
-    LOCALIZATION_TH = 0.90#can be lower depends on the fact
+    LOCALIZATION_TH = 0.95 #can be lower depends on the fact
 
     # FOV(rad), modify this according to your LiDAR type
     FOV = 2 * math.pi #suit for MID 360
