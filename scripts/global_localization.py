@@ -235,7 +235,7 @@ if __name__ == '__main__':
     pub_map_to_odom = rospy.Publisher('/map_to_odom', Odometry, queue_size=1)
 
     rospy.Subscriber('/cloud_registered', PointCloud2, cb_save_cur_scan, queue_size=1)
-    rospy.Subscriber('/Odometry', Odometry, cb_save_cur_odom, queue_size=1)
+    rospy.Subscriber('/Odometry_imu', Odometry, cb_save_cur_odom, queue_size=1)
 
     # 初始化全局地图
     rospy.logwarn('Waiting for global map......')

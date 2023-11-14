@@ -809,7 +809,7 @@ void timer_cbk(const ros::TimerEvent&)
             filter_odom.twist.twist.linear.y += odom_vec[i].twist.twist.linear.y;
             filter_odom.twist.twist.linear.z += odom_vec[i].twist.twist.linear.z;
         }
-        filter_odom.header.frame_id = "world";
+        filter_odom.header.frame_id = "map";
         filter_odom.header.stamp = ros::Time::now();
         filter_odom.pose.pose.position.x /= odom_vec.size();
         filter_odom.pose.pose.position.y /= odom_vec.size();
