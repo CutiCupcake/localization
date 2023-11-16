@@ -56,6 +56,7 @@
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <livox_ros_driver/CustomMsg.h>
 #include "preprocess.h"
 #include <ikd-Tree/ikd_Tree.h>
@@ -95,7 +96,7 @@ double cube_len = 0, HALF_FOV_COS = 0, FOV_DEG = 0, total_distance = 0, lidar_en
 int    effct_feat_num = 0, time_log_counter = 0, scan_count = 0, publish_count = 0;
 int    iterCount = 0, feats_down_size = 0, NUM_MAX_ITERATIONS = 0, laserCloudValidNum = 0, pcd_save_interval = -1, pcd_index = 0;
 bool   point_selected_surf[100000] = {0};
-bool   lidar_pushed, flg_first_scan = true, flg_reset, flg_exit = false, flg_EKF_inited;
+bool   lidar_pushed, flg_first_scan = true, flg_exit = false, flg_EKF_inited;
 bool   scan_pub_en = false, dense_pub_en = false, scan_body_pub_en = false;
 
 vector<vector<int>>  pointSearchInd_surf; 
@@ -119,8 +120,7 @@ PointCloudXYZI::Ptr _featsArray;
 pcl::VoxelGrid<PointType> downSizeFilterSurf;
 pcl::VoxelGrid<PointType> downSizeFilterMap;
 
-// KD_TREE<PointType> ikdtree;
-KD_TREE ikdtree;
+KD_TREE<PointType> ikdtree;
 
 V3F XAxisPoint_body(LIDAR_SP_LEN, 0.0, 0.0);
 V3F XAxisPoint_world(LIDAR_SP_LEN, 0.0, 0.0);
@@ -147,6 +147,7 @@ shared_ptr<ImuProcess> p_imu(new ImuProcess());
 bool kf_flag = false;
 sensor_msgs::Imu RealImu;
 ros::Publisher pubOdomFromImu;
+ros::Publisher pubVisionPose;
 esekfom::esekf<state_ikfom, 12, input_ikfom> kf_real;
 ros::Time sub_imu_time;
 ros::Time sub_lidar_time;
@@ -237,7 +238,6 @@ void points_cache_collect()
     PointVector points_history;
     ikdtree.acquire_removed_points(points_history);
     // for (int i = 0; i < points_history.size(); i++) _featsArray->push_back(points_history[i]);
-    for (int i = 0; i < points_history.size(); i++) _featsArray->push_back(points_history[i]);
 }
 
 BoxPointType LocalMap_Points;
@@ -809,7 +809,7 @@ void timer_cbk(const ros::TimerEvent&)
             filter_odom.twist.twist.linear.y += odom_vec[i].twist.twist.linear.y;
             filter_odom.twist.twist.linear.z += odom_vec[i].twist.twist.linear.z;
         }
-        filter_odom.header.frame_id = "map";
+        filter_odom.header.frame_id = "world";
         filter_odom.header.stamp = ros::Time::now();
         filter_odom.pose.pose.position.x /= odom_vec.size();
         filter_odom.pose.pose.position.y /= odom_vec.size();
@@ -822,7 +822,13 @@ void timer_cbk(const ros::TimerEvent&)
         filter_odom.twist.twist.linear.y /= odom_vec.size();
         filter_odom.twist.twist.linear.z /= odom_vec.size();
 
+        geometry_msgs::PoseStamped vision_pose;
+        vision_pose.header = filter_odom.header;
+        vision_pose.pose = filter_odom.pose.pose;
+
         pubOdomFromImu.publish(filter_odom);
+        pubVisionPose.publish(vision_pose);
+
     }
 }
 
@@ -934,6 +940,7 @@ int main(int argc, char** argv)
 
     // Changed by cxw
     pubOdomFromImu = nh.advertise<nav_msgs::Odometry> ("/Odometry_imu", 100000);
+    pubVisionPose = nh.advertise<geometry_msgs::PoseStamped> ("/mavros/vision_pose/pose", 100000);
     ros::Timer timer = nh.createTimer(ros::Duration(0.005), timer_cbk);
 //------------------------------------------------------------------------------------------------------
     signal(SIGINT, SigHandle);

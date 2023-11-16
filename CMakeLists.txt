@@ -89,3 +89,7 @@ add_executable(fastlio_mapping src/laserMapping.cpp include/ikd-Tree/ikd_Tree.cp
 target_link_libraries(fastlio_mapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES})
 target_include_directories(fastlio_mapping PRIVATE ${PYTHON_INCLUDE_DIRS})
 add_dependencies(fastlio_mapping fast_lio_gencfg fast_lio_generate_messages_cpp)
+
+add_executable(fastlio_localization src/transform_fusion.cpp)
+target_link_libraries(fastlio_localization ${catkin_LIBRARIES})
+
