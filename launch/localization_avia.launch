@@ -21,6 +21,7 @@
     <node pkg="fast_lio_localization" type="global_localization.py" name="global_localization" output="screen" />
 
 	<!-- transform  fusion-->
+    <!-- <node pkg="fast_lio_localization" type="fastlio_localization" name="transform_fusion" output="screen" /> -->
     <node pkg="fast_lio_localization" type="transform_fusion.py" name="transform_fusion" output="screen" />
 
 	<!-- glbal map-->

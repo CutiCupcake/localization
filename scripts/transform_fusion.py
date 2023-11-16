@@ -67,7 +67,7 @@ def cb_save_cur_odom(odom_msg):
 
 def cb_save_map_to_odom(odom_msg):
     global cur_map_to_odom
-    cur_map_to_odom = odom_msg
+    cur_map_to_odom = odom_msg  
 
 
 if __name__ == '__main__':
@@ -77,9 +77,9 @@ if __name__ == '__main__':
     rospy.init_node('transform_fusion')
     rospy.loginfo('Transform Fusion Node Inited...')
 
-    rospy.Subscriber('/Odometry_imu', Odometry, cb_save_cur_odom, queue_size=1)
-    rospy.Subscriber('/map_to_odom', Odometry, cb_save_map_to_odom, queue_size=1)
-
+    rospy.Subscriber('/Odometry_imu', Odometry, cb_save_cur_odom, queue_size=100, tcp_nodelay=True)
+    rospy.Subscriber('/map_to_odom', Odometry, cb_save_map_to_odom, queue_size=100, tcp_nodelay=True)
+    
     pub_localization = rospy.Publisher('/localization', Odometry, queue_size=1)
 
     # 发布定位消息
